@@ -1,7 +1,13 @@
+## CHANGES from base deoxys
+- Python only client using precompiled protos (see `deoxys/deoxys/python`)
+- Robotiq gripper support
+
+---
+
 <p align="center">
 <img src="./deoxys_github_logo.png">
 </p>
-
+<!-- 
 <p align="center">
 <a href="https://github.com/UT-Austin-RPL/deoxys_control/actions">
 <img alt="Tests Passing" src="https://github.com/anuraghazra/github-readme-stats/workflows/Test/badge.svg" />
@@ -11,7 +17,7 @@
 </a>
 <a href="https://github.com/UT-Austin-RPL/deoxys_control/issues">
 <img alt="Issues" src="https://img.shields.io/github/issues/UT-Austin-RPL/deoxys_control?color=0088ff" />
-</a>
+</a> -->
 
 
 [**[Documentation]**](https://zhuyifengzju.github.io/deoxys_docs/html/index.html) &ensp; 
@@ -41,12 +47,26 @@ If you use this codebase for your research projects, please cite our codebase ba
 ```
 
 
-# Installation of codebase
+# Installation of codebase (Client)
+
+## Deoxys - Desktop (Any Mac / Linux machine)
+
+Set up your own conda environment and install all the python dependencies (feel free to add pull requests if anything is missing) from `deoxys_control/requirements.txt`, by doing:
+```shell
+cd deoxys_control/deoxys
+pip install -U -r requirements.txt
+```
+
+Install the repository with (`-e flag is optional`):
+```shell
+pip install -e .
+```
+
+# Installation of codebase (NUC Server)
 
 Overall, the installation has three parts:
 1. Install dependencies by running `InstallPackage`
-2. Compile desktop-side codebase (Python)
-3. Compile NUC-side codebase (C++)
+2. Compile NUC-side codebase (C++)
 
 Here are the details. For more information, please refer to the [Codebase Installation Page](https://ut-austin-rpl.github.io/deoxys-docs/html/installation/codebase_installation.html).
 
@@ -61,20 +81,6 @@ cd deoxys_control/deoxys
 Run the `InstallPackage` file to install necessary packages.
 ``` shell
 ./InstallPackage
-```
-
-
-## Deoxys - Desktop
-
-Make sure that you are in your python virtual environment before
-	building this.
-``` shell
-make -j build_deoxys=1
-```
-
-And install all the python dependencies (feel free to add pull requests if anything is missing) from `deoxys_control/requirements.txt`, by doing:
-```shell
-pip install -U -r requirements.txt
 ```
 
 ## Franka Interface - Intel NUC

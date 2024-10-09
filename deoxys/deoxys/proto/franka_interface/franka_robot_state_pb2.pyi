@@ -1,0 +1,228 @@
+from google.protobuf.internal import containers as _containers
+from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
+from google.protobuf import descriptor as _descriptor
+from google.protobuf import message as _message
+from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Mapping, Optional as _Optional, Union as _Union
+
+DESCRIPTOR: _descriptor.FileDescriptor
+
+class FrankaGripperStateMessage(_message.Message):
+    __slots__ = ("width", "max_width", "is_grasped", "temperature", "time")
+    class Duration(_message.Message):
+        __slots__ = ("toSec", "toMSec")
+        TOSEC_FIELD_NUMBER: _ClassVar[int]
+        TOMSEC_FIELD_NUMBER: _ClassVar[int]
+        toSec: float
+        toMSec: int
+        def __init__(self, toSec: _Optional[float] = ..., toMSec: _Optional[int] = ...) -> None: ...
+    WIDTH_FIELD_NUMBER: _ClassVar[int]
+    MAX_WIDTH_FIELD_NUMBER: _ClassVar[int]
+    IS_GRASPED_FIELD_NUMBER: _ClassVar[int]
+    TEMPERATURE_FIELD_NUMBER: _ClassVar[int]
+    TIME_FIELD_NUMBER: _ClassVar[int]
+    width: float
+    max_width: float
+    is_grasped: bool
+    temperature: int
+    time: FrankaGripperStateMessage.Duration
+    def __init__(self, width: _Optional[float] = ..., max_width: _Optional[float] = ..., is_grasped: bool = ..., temperature: _Optional[int] = ..., time: _Optional[_Union[FrankaGripperStateMessage.Duration, _Mapping]] = ...) -> None: ...
+
+class FrankaRobotStateMessage(_message.Message):
+    __slots__ = ("O_T_EE", "O_T_EE_d", "F_T_EE", "F_T_NE", "NE_T_EE", "EE_T_K", "m_ee", "I_ee", "F_x_Cee", "m_load", "I_load", "F_x_Cload", "m_total", "I_total", "F_x_Ctotal", "elbow", "elbow_d", "elbow_c", "delbow_c", "ddelbow_c", "tau_J", "tau_J_d", "dtau_J", "q", "q_d", "dq", "dq_d", "ddq_d", "joint_contact", "cartesian_contact", "joint_collision", "cartesian_collision", "tau_ext_hat_filtered", "O_F_ext_hat_K", "K_F_ext_hat_K", "O_dP_EE_d", "O_T_EE_c", "O_dP_EE_c", "O_ddP_EE_c", "theta", "dtheta", "current_errors", "last_motion_errors", "control_command_success_rate", "robot_mode", "time", "current_robot_poses_frames", "frame")
+    class RobotMode(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+        __slots__ = ()
+        Other: _ClassVar[FrankaRobotStateMessage.RobotMode]
+        Idle: _ClassVar[FrankaRobotStateMessage.RobotMode]
+        Move: _ClassVar[FrankaRobotStateMessage.RobotMode]
+        Guiding: _ClassVar[FrankaRobotStateMessage.RobotMode]
+        Reflex: _ClassVar[FrankaRobotStateMessage.RobotMode]
+        UserStopped: _ClassVar[FrankaRobotStateMessage.RobotMode]
+        AutomaticErrorRecovery: _ClassVar[FrankaRobotStateMessage.RobotMode]
+    Other: FrankaRobotStateMessage.RobotMode
+    Idle: FrankaRobotStateMessage.RobotMode
+    Move: FrankaRobotStateMessage.RobotMode
+    Guiding: FrankaRobotStateMessage.RobotMode
+    Reflex: FrankaRobotStateMessage.RobotMode
+    UserStopped: FrankaRobotStateMessage.RobotMode
+    AutomaticErrorRecovery: FrankaRobotStateMessage.RobotMode
+    class Errors(_message.Message):
+        __slots__ = ("joint_position_limits_violation", "cartesian_position_limits_violation", "self_collision_avoidance_violation", "joint_velocity_violation", "cartesian_velocity_violation", "force_control_safety_violation", "joint_reflex", "cartesian_reflex", "max_goal_pose_deviation_violation", "max_path_pose_deviation_violation", "cartesian_velocity_profile_safety_violation", "joint_position_motion_generator_start_pose_invalid", "joint_motion_generator_position_limits_violation", "joint_motion_generator_velocity_limits_violation", "joint_motion_generator_velocity_discontinuity", "joint_motion_generator_acceleration_discontinuity", "cartesian_position_motion_generator_start_pose_invalid", "cartesian_motion_generator_elbow_limit_violation", "cartesian_motion_generator_velocity_limits_violation", "cartesian_motion_generator_velocity_discontinuity", "cartesian_motion_generator_acceleration_discontinuity", "cartesian_motion_generator_elbow_sign_inconsistent", "cartesian_motion_generator_start_elbow_invalid", "cartesian_motion_generator_joint_position_limits_violation", "cartesian_motion_generator_joint_velocity_limits_violation", "cartesian_motion_generator_joint_velocity_discontinuity", "cartesian_motion_generator_joint_acceleration_discontinuity", "cartesian_position_motion_generator_invalid_frame", "force_controller_desired_force_tolerance_violation", "controller_torque_discontinuity", "start_elbow_sign_inconsistent", "communication_constraints_violation", "power_limit_violation", "joint_p2p_insufficient_torque_for_planning", "tau_j_range_violation", "instability_detected", "joint_move_in_wrong_direction")
+        JOINT_POSITION_LIMITS_VIOLATION_FIELD_NUMBER: _ClassVar[int]
+        CARTESIAN_POSITION_LIMITS_VIOLATION_FIELD_NUMBER: _ClassVar[int]
+        SELF_COLLISION_AVOIDANCE_VIOLATION_FIELD_NUMBER: _ClassVar[int]
+        JOINT_VELOCITY_VIOLATION_FIELD_NUMBER: _ClassVar[int]
+        CARTESIAN_VELOCITY_VIOLATION_FIELD_NUMBER: _ClassVar[int]
+        FORCE_CONTROL_SAFETY_VIOLATION_FIELD_NUMBER: _ClassVar[int]
+        JOINT_REFLEX_FIELD_NUMBER: _ClassVar[int]
+        CARTESIAN_REFLEX_FIELD_NUMBER: _ClassVar[int]
+        MAX_GOAL_POSE_DEVIATION_VIOLATION_FIELD_NUMBER: _ClassVar[int]
+        MAX_PATH_POSE_DEVIATION_VIOLATION_FIELD_NUMBER: _ClassVar[int]
+        CARTESIAN_VELOCITY_PROFILE_SAFETY_VIOLATION_FIELD_NUMBER: _ClassVar[int]
+        JOINT_POSITION_MOTION_GENERATOR_START_POSE_INVALID_FIELD_NUMBER: _ClassVar[int]
+        JOINT_MOTION_GENERATOR_POSITION_LIMITS_VIOLATION_FIELD_NUMBER: _ClassVar[int]
+        JOINT_MOTION_GENERATOR_VELOCITY_LIMITS_VIOLATION_FIELD_NUMBER: _ClassVar[int]
+        JOINT_MOTION_GENERATOR_VELOCITY_DISCONTINUITY_FIELD_NUMBER: _ClassVar[int]
+        JOINT_MOTION_GENERATOR_ACCELERATION_DISCONTINUITY_FIELD_NUMBER: _ClassVar[int]
+        CARTESIAN_POSITION_MOTION_GENERATOR_START_POSE_INVALID_FIELD_NUMBER: _ClassVar[int]
+        CARTESIAN_MOTION_GENERATOR_ELBOW_LIMIT_VIOLATION_FIELD_NUMBER: _ClassVar[int]
+        CARTESIAN_MOTION_GENERATOR_VELOCITY_LIMITS_VIOLATION_FIELD_NUMBER: _ClassVar[int]
+        CARTESIAN_MOTION_GENERATOR_VELOCITY_DISCONTINUITY_FIELD_NUMBER: _ClassVar[int]
+        CARTESIAN_MOTION_GENERATOR_ACCELERATION_DISCONTINUITY_FIELD_NUMBER: _ClassVar[int]
+        CARTESIAN_MOTION_GENERATOR_ELBOW_SIGN_INCONSISTENT_FIELD_NUMBER: _ClassVar[int]
+        CARTESIAN_MOTION_GENERATOR_START_ELBOW_INVALID_FIELD_NUMBER: _ClassVar[int]
+        CARTESIAN_MOTION_GENERATOR_JOINT_POSITION_LIMITS_VIOLATION_FIELD_NUMBER: _ClassVar[int]
+        CARTESIAN_MOTION_GENERATOR_JOINT_VELOCITY_LIMITS_VIOLATION_FIELD_NUMBER: _ClassVar[int]
+        CARTESIAN_MOTION_GENERATOR_JOINT_VELOCITY_DISCONTINUITY_FIELD_NUMBER: _ClassVar[int]
+        CARTESIAN_MOTION_GENERATOR_JOINT_ACCELERATION_DISCONTINUITY_FIELD_NUMBER: _ClassVar[int]
+        CARTESIAN_POSITION_MOTION_GENERATOR_INVALID_FRAME_FIELD_NUMBER: _ClassVar[int]
+        FORCE_CONTROLLER_DESIRED_FORCE_TOLERANCE_VIOLATION_FIELD_NUMBER: _ClassVar[int]
+        CONTROLLER_TORQUE_DISCONTINUITY_FIELD_NUMBER: _ClassVar[int]
+        START_ELBOW_SIGN_INCONSISTENT_FIELD_NUMBER: _ClassVar[int]
+        COMMUNICATION_CONSTRAINTS_VIOLATION_FIELD_NUMBER: _ClassVar[int]
+        POWER_LIMIT_VIOLATION_FIELD_NUMBER: _ClassVar[int]
+        JOINT_P2P_INSUFFICIENT_TORQUE_FOR_PLANNING_FIELD_NUMBER: _ClassVar[int]
+        TAU_J_RANGE_VIOLATION_FIELD_NUMBER: _ClassVar[int]
+        INSTABILITY_DETECTED_FIELD_NUMBER: _ClassVar[int]
+        JOINT_MOVE_IN_WRONG_DIRECTION_FIELD_NUMBER: _ClassVar[int]
+        joint_position_limits_violation: bool
+        cartesian_position_limits_violation: bool
+        self_collision_avoidance_violation: bool
+        joint_velocity_violation: bool
+        cartesian_velocity_violation: bool
+        force_control_safety_violation: bool
+        joint_reflex: bool
+        cartesian_reflex: bool
+        max_goal_pose_deviation_violation: bool
+        max_path_pose_deviation_violation: bool
+        cartesian_velocity_profile_safety_violation: bool
+        joint_position_motion_generator_start_pose_invalid: bool
+        joint_motion_generator_position_limits_violation: bool
+        joint_motion_generator_velocity_limits_violation: bool
+        joint_motion_generator_velocity_discontinuity: bool
+        joint_motion_generator_acceleration_discontinuity: bool
+        cartesian_position_motion_generator_start_pose_invalid: bool
+        cartesian_motion_generator_elbow_limit_violation: bool
+        cartesian_motion_generator_velocity_limits_violation: bool
+        cartesian_motion_generator_velocity_discontinuity: bool
+        cartesian_motion_generator_acceleration_discontinuity: bool
+        cartesian_motion_generator_elbow_sign_inconsistent: bool
+        cartesian_motion_generator_start_elbow_invalid: bool
+        cartesian_motion_generator_joint_position_limits_violation: bool
+        cartesian_motion_generator_joint_velocity_limits_violation: bool
+        cartesian_motion_generator_joint_velocity_discontinuity: bool
+        cartesian_motion_generator_joint_acceleration_discontinuity: bool
+        cartesian_position_motion_generator_invalid_frame: bool
+        force_controller_desired_force_tolerance_violation: bool
+        controller_torque_discontinuity: bool
+        start_elbow_sign_inconsistent: bool
+        communication_constraints_violation: bool
+        power_limit_violation: bool
+        joint_p2p_insufficient_torque_for_planning: bool
+        tau_j_range_violation: bool
+        instability_detected: bool
+        joint_move_in_wrong_direction: bool
+        def __init__(self, joint_position_limits_violation: bool = ..., cartesian_position_limits_violation: bool = ..., self_collision_avoidance_violation: bool = ..., joint_velocity_violation: bool = ..., cartesian_velocity_violation: bool = ..., force_control_safety_violation: bool = ..., joint_reflex: bool = ..., cartesian_reflex: bool = ..., max_goal_pose_deviation_violation: bool = ..., max_path_pose_deviation_violation: bool = ..., cartesian_velocity_profile_safety_violation: bool = ..., joint_position_motion_generator_start_pose_invalid: bool = ..., joint_motion_generator_position_limits_violation: bool = ..., joint_motion_generator_velocity_limits_violation: bool = ..., joint_motion_generator_velocity_discontinuity: bool = ..., joint_motion_generator_acceleration_discontinuity: bool = ..., cartesian_position_motion_generator_start_pose_invalid: bool = ..., cartesian_motion_generator_elbow_limit_violation: bool = ..., cartesian_motion_generator_velocity_limits_violation: bool = ..., cartesian_motion_generator_velocity_discontinuity: bool = ..., cartesian_motion_generator_acceleration_discontinuity: bool = ..., cartesian_motion_generator_elbow_sign_inconsistent: bool = ..., cartesian_motion_generator_start_elbow_invalid: bool = ..., cartesian_motion_generator_joint_position_limits_violation: bool = ..., cartesian_motion_generator_joint_velocity_limits_violation: bool = ..., cartesian_motion_generator_joint_velocity_discontinuity: bool = ..., cartesian_motion_generator_joint_acceleration_discontinuity: bool = ..., cartesian_position_motion_generator_invalid_frame: bool = ..., force_controller_desired_force_tolerance_violation: bool = ..., controller_torque_discontinuity: bool = ..., start_elbow_sign_inconsistent: bool = ..., communication_constraints_violation: bool = ..., power_limit_violation: bool = ..., joint_p2p_insufficient_torque_for_planning: bool = ..., tau_j_range_violation: bool = ..., instability_detected: bool = ..., joint_move_in_wrong_direction: bool = ...) -> None: ...
+    class Duration(_message.Message):
+        __slots__ = ("toSec", "toMSec")
+        TOSEC_FIELD_NUMBER: _ClassVar[int]
+        TOMSEC_FIELD_NUMBER: _ClassVar[int]
+        toSec: float
+        toMSec: int
+        def __init__(self, toSec: _Optional[float] = ..., toMSec: _Optional[int] = ...) -> None: ...
+    O_T_EE_FIELD_NUMBER: _ClassVar[int]
+    O_T_EE_D_FIELD_NUMBER: _ClassVar[int]
+    F_T_EE_FIELD_NUMBER: _ClassVar[int]
+    F_T_NE_FIELD_NUMBER: _ClassVar[int]
+    NE_T_EE_FIELD_NUMBER: _ClassVar[int]
+    EE_T_K_FIELD_NUMBER: _ClassVar[int]
+    M_EE_FIELD_NUMBER: _ClassVar[int]
+    I_EE_FIELD_NUMBER: _ClassVar[int]
+    F_X_CEE_FIELD_NUMBER: _ClassVar[int]
+    M_LOAD_FIELD_NUMBER: _ClassVar[int]
+    I_LOAD_FIELD_NUMBER: _ClassVar[int]
+    F_X_CLOAD_FIELD_NUMBER: _ClassVar[int]
+    M_TOTAL_FIELD_NUMBER: _ClassVar[int]
+    I_TOTAL_FIELD_NUMBER: _ClassVar[int]
+    F_X_CTOTAL_FIELD_NUMBER: _ClassVar[int]
+    ELBOW_FIELD_NUMBER: _ClassVar[int]
+    ELBOW_D_FIELD_NUMBER: _ClassVar[int]
+    ELBOW_C_FIELD_NUMBER: _ClassVar[int]
+    DELBOW_C_FIELD_NUMBER: _ClassVar[int]
+    DDELBOW_C_FIELD_NUMBER: _ClassVar[int]
+    TAU_J_FIELD_NUMBER: _ClassVar[int]
+    TAU_J_D_FIELD_NUMBER: _ClassVar[int]
+    DTAU_J_FIELD_NUMBER: _ClassVar[int]
+    Q_FIELD_NUMBER: _ClassVar[int]
+    Q_D_FIELD_NUMBER: _ClassVar[int]
+    DQ_FIELD_NUMBER: _ClassVar[int]
+    DQ_D_FIELD_NUMBER: _ClassVar[int]
+    DDQ_D_FIELD_NUMBER: _ClassVar[int]
+    JOINT_CONTACT_FIELD_NUMBER: _ClassVar[int]
+    CARTESIAN_CONTACT_FIELD_NUMBER: _ClassVar[int]
+    JOINT_COLLISION_FIELD_NUMBER: _ClassVar[int]
+    CARTESIAN_COLLISION_FIELD_NUMBER: _ClassVar[int]
+    TAU_EXT_HAT_FILTERED_FIELD_NUMBER: _ClassVar[int]
+    O_F_EXT_HAT_K_FIELD_NUMBER: _ClassVar[int]
+    K_F_EXT_HAT_K_FIELD_NUMBER: _ClassVar[int]
+    O_DP_EE_D_FIELD_NUMBER: _ClassVar[int]
+    O_T_EE_C_FIELD_NUMBER: _ClassVar[int]
+    O_DP_EE_C_FIELD_NUMBER: _ClassVar[int]
+    O_DDP_EE_C_FIELD_NUMBER: _ClassVar[int]
+    THETA_FIELD_NUMBER: _ClassVar[int]
+    DTHETA_FIELD_NUMBER: _ClassVar[int]
+    CURRENT_ERRORS_FIELD_NUMBER: _ClassVar[int]
+    LAST_MOTION_ERRORS_FIELD_NUMBER: _ClassVar[int]
+    CONTROL_COMMAND_SUCCESS_RATE_FIELD_NUMBER: _ClassVar[int]
+    ROBOT_MODE_FIELD_NUMBER: _ClassVar[int]
+    TIME_FIELD_NUMBER: _ClassVar[int]
+    CURRENT_ROBOT_POSES_FRAMES_FIELD_NUMBER: _ClassVar[int]
+    FRAME_FIELD_NUMBER: _ClassVar[int]
+    O_T_EE: _containers.RepeatedScalarFieldContainer[float]
+    O_T_EE_d: _containers.RepeatedScalarFieldContainer[float]
+    F_T_EE: _containers.RepeatedScalarFieldContainer[float]
+    F_T_NE: _containers.RepeatedScalarFieldContainer[float]
+    NE_T_EE: _containers.RepeatedScalarFieldContainer[float]
+    EE_T_K: _containers.RepeatedScalarFieldContainer[float]
+    m_ee: float
+    I_ee: _containers.RepeatedScalarFieldContainer[float]
+    F_x_Cee: _containers.RepeatedScalarFieldContainer[float]
+    m_load: float
+    I_load: _containers.RepeatedScalarFieldContainer[float]
+    F_x_Cload: _containers.RepeatedScalarFieldContainer[float]
+    m_total: float
+    I_total: _containers.RepeatedScalarFieldContainer[float]
+    F_x_Ctotal: _containers.RepeatedScalarFieldContainer[float]
+    elbow: _containers.RepeatedScalarFieldContainer[float]
+    elbow_d: _containers.RepeatedScalarFieldContainer[float]
+    elbow_c: _containers.RepeatedScalarFieldContainer[float]
+    delbow_c: _containers.RepeatedScalarFieldContainer[float]
+    ddelbow_c: _containers.RepeatedScalarFieldContainer[float]
+    tau_J: _containers.RepeatedScalarFieldContainer[float]
+    tau_J_d: _containers.RepeatedScalarFieldContainer[float]
+    dtau_J: _containers.RepeatedScalarFieldContainer[float]
+    q: _containers.RepeatedScalarFieldContainer[float]
+    q_d: _containers.RepeatedScalarFieldContainer[float]
+    dq: _containers.RepeatedScalarFieldContainer[float]
+    dq_d: _containers.RepeatedScalarFieldContainer[float]
+    ddq_d: _containers.RepeatedScalarFieldContainer[float]
+    joint_contact: _containers.RepeatedScalarFieldContainer[float]
+    cartesian_contact: _containers.RepeatedScalarFieldContainer[float]
+    joint_collision: _containers.RepeatedScalarFieldContainer[float]
+    cartesian_collision: _containers.RepeatedScalarFieldContainer[float]
+    tau_ext_hat_filtered: _containers.RepeatedScalarFieldContainer[float]
+    O_F_ext_hat_K: _containers.RepeatedScalarFieldContainer[float]
+    K_F_ext_hat_K: _containers.RepeatedScalarFieldContainer[float]
+    O_dP_EE_d: _containers.RepeatedScalarFieldContainer[float]
+    O_T_EE_c: _containers.RepeatedScalarFieldContainer[float]
+    O_dP_EE_c: _containers.RepeatedScalarFieldContainer[float]
+    O_ddP_EE_c: _containers.RepeatedScalarFieldContainer[float]
+    theta: _containers.RepeatedScalarFieldContainer[float]
+    dtheta: _containers.RepeatedScalarFieldContainer[float]
+    current_errors: FrankaRobotStateMessage.Errors
+    last_motion_errors: FrankaRobotStateMessage.Errors
+    control_command_success_rate: float
+    robot_mode: FrankaRobotStateMessage.RobotMode
+    time: FrankaRobotStateMessage.Duration
+    current_robot_poses_frames: _containers.RepeatedScalarFieldContainer[float]
+    frame: int
+    def __init__(self, O_T_EE: _Optional[_Iterable[float]] = ..., O_T_EE_d: _Optional[_Iterable[float]] = ..., F_T_EE: _Optional[_Iterable[float]] = ..., F_T_NE: _Optional[_Iterable[float]] = ..., NE_T_EE: _Optional[_Iterable[float]] = ..., EE_T_K: _Optional[_Iterable[float]] = ..., m_ee: _Optional[float] = ..., I_ee: _Optional[_Iterable[float]] = ..., F_x_Cee: _Optional[_Iterable[float]] = ..., m_load: _Optional[float] = ..., I_load: _Optional[_Iterable[float]] = ..., F_x_Cload: _Optional[_Iterable[float]] = ..., m_total: _Optional[float] = ..., I_total: _Optional[_Iterable[float]] = ..., F_x_Ctotal: _Optional[_Iterable[float]] = ..., elbow: _Optional[_Iterable[float]] = ..., elbow_d: _Optional[_Iterable[float]] = ..., elbow_c: _Optional[_Iterable[float]] = ..., delbow_c: _Optional[_Iterable[float]] = ..., ddelbow_c: _Optional[_Iterable[float]] = ..., tau_J: _Optional[_Iterable[float]] = ..., tau_J_d: _Optional[_Iterable[float]] = ..., dtau_J: _Optional[_Iterable[float]] = ..., q: _Optional[_Iterable[float]] = ..., q_d: _Optional[_Iterable[float]] = ..., dq: _Optional[_Iterable[float]] = ..., dq_d: _Optional[_Iterable[float]] = ..., ddq_d: _Optional[_Iterable[float]] = ..., joint_contact: _Optional[_Iterable[float]] = ..., cartesian_contact: _Optional[_Iterable[float]] = ..., joint_collision: _Optional[_Iterable[float]] = ..., cartesian_collision: _Optional[_Iterable[float]] = ..., tau_ext_hat_filtered: _Optional[_Iterable[float]] = ..., O_F_ext_hat_K: _Optional[_Iterable[float]] = ..., K_F_ext_hat_K: _Optional[_Iterable[float]] = ..., O_dP_EE_d: _Optional[_Iterable[float]] = ..., O_T_EE_c: _Optional[_Iterable[float]] = ..., O_dP_EE_c: _Optional[_Iterable[float]] = ..., O_ddP_EE_c: _Optional[_Iterable[float]] = ..., theta: _Optional[_Iterable[float]] = ..., dtheta: _Optional[_Iterable[float]] = ..., current_errors: _Optional[_Union[FrankaRobotStateMessage.Errors, _Mapping]] = ..., last_motion_errors: _Optional[_Union[FrankaRobotStateMessage.Errors, _Mapping]] = ..., control_command_success_rate: _Optional[float] = ..., robot_mode: _Optional[_Union[FrankaRobotStateMessage.RobotMode, str]] = ..., time: _Optional[_Union[FrankaRobotStateMessage.Duration, _Mapping]] = ..., current_robot_poses_frames: _Optional[_Iterable[float]] = ..., frame: _Optional[int] = ...) -> None: ...
