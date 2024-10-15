@@ -7,6 +7,7 @@ from typing import Tuple, Type, Union
 import numpy as np
 import zmq
 
+from deoxys import config_root
 import deoxys.proto.franka_interface.franka_controller_pb2 as franka_controller_pb2
 import deoxys.proto.franka_interface.franka_robot_state_pb2 as franka_robot_state_pb2
 from deoxys.franka_interface.visualizer import visualizer_factory
@@ -16,6 +17,16 @@ from deoxys.utils.yaml_config import YamlConfig
 
 logger = logging.getLogger(__name__)
 
+DEFAULT_RESET_JOINT = [
+    0.09162008114028396,
+    -0.19826458111314524,
+    -0.01990020486871322,
+    -2.4732269941140346,
+    -0.01307073642274261,
+    2.30396583422025,
+    0.8480939705504309,
+]
+DEFAULT_JOINT_CONFIG = YamlConfig(config_root + "/joint-position-controller.yml").as_easydict()
 
 def action_to_osc_pose_goal(action, is_delta=True) -> franka_controller_pb2.Goal:
     goal = franka_controller_pb2.Goal()
@@ -587,6 +598,31 @@ class FrankaInterface:
         self.last_gripper_action = 0
         self.last_gripper_command_counter = 0
         self._history_actions = []
+
+    def goto_joint_position(self, joint_positions=DEFAULT_RESET_JOINT, controller_cfg=DEFAULT_JOINT_CONFIG, tolerance=1e-3):
+        action = list(joint_positions) + [-1.0]
+
+        while True:
+            if len(self._state_buffer) > 0:
+                # logger.info(f"Current Robot joint: {np.round(self.last_q, 3)}")
+                # logger.info(f"Desired Robot joint: {np.round(self.last_q_d, 3)}")
+
+                if (
+                    np.max(
+                        np.abs(
+                            np.array(self._state_buffer[-1].q)
+                            - np.array(joint_positions)
+                        )
+                    )
+                    < tolerance
+                ):
+                    break
+            self.control(
+                controller_type="JOINT_POSITION",
+                action=action,
+                controller_cfg=controller_cfg,
+            )
+
 
     @property
     def received_states(self):
