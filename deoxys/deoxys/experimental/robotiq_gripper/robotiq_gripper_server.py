@@ -33,12 +33,31 @@ class RobotiqGripperServer:
         general_cfg = YamlConfig(general_cfg_file).as_easydict()
         self._gripper_pub_port = general_cfg.NUC.GRIPPER_PUB_PORT
         self._gripper_sub_port = general_cfg.NUC.GRIPPER_SUB_PORT
-        self._gripper_ip = general_cfg.NUC.IP
+        self._gripper_sub_ip = general_cfg.PC.IP
         self._gripper_pub_rate = 40.
         if "GRIPPER" in general_cfg and "PUB_RATE" in general_cfg.GRIPPER:
             sel._gripper_pub_rate = general_cfg.GRIPPER.PUB_RATE
 
-        self.gripper = Robotiq2FingerGripper(comport=comport)
+        self.comport = comport
+        self.init_gripper()
+
+        # Connect to client
+
+        self._context = zmq.Context()
+        self._gripper_publisher = self._context.socket(zmq.PUB)
+        self._gripper_subscriber = self._context.socket(zmq.SUB)
+
+        # publisher (sends gripper states to client)
+        self._gripper_publisher.bind(f"tcp://*:{self._gripper_pub_port}")
+
+        # subscriber (receives gripper commands from client)
+        self._gripper_subscriber.setsockopt_string(zmq.SUBSCRIBE, "")
+        self._gripper_subscriber.connect(f"tcp://{self._gripper_sub_ip}:{self._gripper_sub_port}")
+
+        self._latest_gripper_msg = None
+
+    def init_gripper(self):
+        self.gripper = Robotiq2FingerGripper(comport=self.comport)
 
         if not self.gripper.init_success:
             raise Exception(f"Unable to open comport to {comport}")
@@ -57,20 +76,6 @@ class RobotiqGripperServer:
         else:
             raise Exception(f"Unable to activate!")
 
-        # Connect to client
-
-        self._context = zmq.Context()
-        self._gripper_publisher = self._context.socket(zmq.PUB)
-        self._gripper_subscriber = self._context.socket(zmq.SUB)
-
-        # publisher (sends gripper states to client)
-        self._gripper_publisher.bind(f"tcp://*:{self._gripper_pub_port}")
-
-        # subscriber (receives gripper commands from client)
-        self._gripper_subscriber.setsockopt_string(zmq.SUBSCRIBE, "")
-        self._gripper_subscriber.connect(f"tcp://{self._gripper_ip}:{self._gripper_sub_port}")
-
-        self._latest_gripper_msg = None
 
     def get_gripper_state(self):
         gripper_state = (
@@ -102,29 +107,40 @@ class RobotiqGripperServer:
     def apply_gripper_command(self, cmd: _any_pb2.Any):
         send_after = True
 
+        h = franka_controller_pb2.FrankaGripperHomingMessage()
+        s = franka_controller_pb2.FrankaGripperStopMessage()
+        m = franka_controller_pb2.FrankaGripperMoveMessage()
+        g = franka_controller_pb2.FrankaGripperGraspMessage()
+
+
         # STOP
-        if isinstance(cmd, franka_controller_pb2.FrankaGripperStopMessage):
+        if cmd.Unpack(s): 
             self.gripper.stop()
+            #print("recieved stop")
 
         # MOVE
-        elif isinstance(cmd, franka_controller_pb2.FrankaGripperMoveMessage):
-            self.gripper.goto(pos=cmd.width, vel=cmd.speed)
+        elif cmd.Unpack(m): 
+            self.gripper.goto(pos=m.width, vel=m.speed, force=DEFAULT_GRASP_FORCE)
+            #print("recieved move")
 
         # GRASP
-        elif isinstance(cmd, franka_controller_pb2.FrankaGripperGraspMessage):
+        elif cmd.Unpack(g):
             # use default force for grasp if not specified
-            if cmd.force == 0.:
-                cmd.force = DEFAULT_GRASP_FORCE
-            self.gripper.goto(pos=cmd.width, vel=cmd.speed, force=cmd.force)
-        
+            if g.force == 0.:
+                g.force = DEFAULT_GRASP_FORCE
+            self.gripper.goto(pos=g.width, vel=g.speed, force=g.force)
+            #print("recieved grasp")
+
         # HOMING
-        elif isinstance(cmd, franka_controller_pb2.FrankaGripperHomingMessage):
-            self.gripper.home()
+        elif cmd.Unpack(h):
+            log.info("Homing Disabled (bug: unable to reactivate gripper after).")
+            #self.init_gripper()
+
             send_after = False  # homing does its own sending.
-        
+
         # error otherwise
         else:
-            raise NotImplementedError(f"{type(ctrl)} is not implemented for robotiq gripper!")
+            raise NotImplementedError(f"{type(cmd)} is not implemented for robotiq gripper!")
 
         # finalize the command by sending it to the gripper over modbus
         if send_after:
@@ -150,26 +166,26 @@ class RobotiqGripperServer:
         self._state_pub_thread.daemon = True
         self._state_pub_thread.start()
 
-        log.info(f"Publishing gripper state to localhost:{self._gripper_pub_port}, subscribing to {self._gripper_ip}:{self._gripper_sub_port}.")
+        log.info(f"Publishing gripper state to localhost:{self._gripper_pub_port}, subscribing to {self._gripper_sub_ip}:{self._gripper_sub_port}.")
 
         # main thread for reading commands and applying it on gripper.
         running = True
         while running:
             # read the state
-            try:
-                control_msg = franka_controller_pb2.FrankaGripperControlMessage()
+            #try:
+            control_msg = franka_controller_pb2.FrankaGripperControlMessage()
                 
-                # blocking, wait for new command.
-                message = self._gripper_subscriber.recv()
-                control_msg.ParseFromString(message)
+            # blocking, wait for new command.
+            message = self._gripper_subscriber.recv()
+            control_msg.ParseFromString(message)
 
-                # apply various types of gripper control 
-                # (BLOCKING, commands will not interrupt each other)
-                self.apply_gripper_command(control_msg.control_msg)
+            # apply various types of gripper control 
+            # (BLOCKING, commands will not interrupt each other)
+            self.apply_gripper_command(control_msg.control_msg)
 
-                if control_msg.termination:
-                    log.warning("Commanded Gripper Termination!")
-                    running = False
+            if control_msg.termination:
+                log.warning("Commanded Gripper Termination!")
+                running = False
 
-            except Exception as e:
-                log.warning(e)
+            #except Exception as e:
+            #    log.warning(e)
