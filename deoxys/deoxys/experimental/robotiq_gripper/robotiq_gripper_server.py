@@ -31,8 +31,8 @@ class RobotiqGripperServer:
 
         # Connect to gripper
         general_cfg = YamlConfig(general_cfg_file).as_easydict()
-        self._gripper_pub_port = general_cfg.NUC.GRIPPER_SUB_PORT
-        self._gripper_sub_port = general_cfg.NUC.GRIPPER_PUB_PORT
+        self._gripper_pub_port = general_cfg.NUC.GRIPPER_PUB_PORT
+        self._gripper_sub_port = general_cfg.NUC.GRIPPER_SUB_PORT
         self._gripper_ip = general_cfg.NUC.IP
         self._gripper_pub_rate = 40.
         if "GRIPPER" in general_cfg and "PUB_RATE" in general_cfg.GRIPPER:
@@ -149,6 +149,8 @@ class RobotiqGripperServer:
         self._state_pub_thread = threading.Thread(target=self.get_state_loop)
         self._state_pub_thread.daemon = True
         self._state_pub_thread.start()
+
+        log.info(f"Publishing gripper state to localhost:{self._gripper_pub_port}, subscribing to {self._gripper_ip}:{self._gripper_sub_port}.")
 
         # main thread for reading commands and applying it on gripper.
         running = True

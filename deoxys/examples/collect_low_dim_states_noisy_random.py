@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import logging
 import os
 import pickle
 import threading
@@ -76,11 +77,18 @@ def main():
 
     def get_action(i, controller_type):
         assert controller_type == "OSC_POSE"
+        grasp = False
         if i < 40:
             # move forward
             action = np.array([0.5, 0, 0, 0, 0, 0.0, -1.0])
+            # grasp
+            if i == 39:
+                grasp = action[-1] = 1
         elif i < 80:
-            action = np.array([0., 0, 0.5, 0, 0, 0.0, -1.0])
+            action = np.array([0., 0, 0.5, 0, 0, 0.0, 1.0])
+            # ungrasp
+            if i == 79:
+                action[-1] = -1
         elif i < 120:
             action = np.array([0., 0.5, 0., 0, 0, 0.0, -1.0])
         elif i < 160:
@@ -90,7 +98,7 @@ def main():
         else:
             action = None
         
-        return action, False
+        return action, grasp
 
     # action_trajectory
 

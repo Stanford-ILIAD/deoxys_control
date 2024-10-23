@@ -171,6 +171,11 @@ class FrankaInterface:
         # automatically reset gripper by default
         self.automatic_gripper_reset = automatic_gripper_reset
 
+        logger.info("Waiting for states...")
+        while not self.received_states:
+            time.sleep(0.01)
+        logger.info("Received states.")
+
     def get_state(self, no_block: bool = False):
         """_summary_
 
@@ -508,6 +513,9 @@ class FrankaInterface:
         # action 0-> 1 : Grasp
         # action 1-> 0 : Release
 
+        if self._gripper_state_buffer:
+            print(self._gripper_state_buffer[-1])
+
         # TODO (Yifeng): Test if sending grasping or gripper directly
         # will stop executing the previous command
         if action < 0.0:  #  and self.last_gripper_action == 1):
@@ -599,7 +607,7 @@ class FrankaInterface:
         self.last_gripper_command_counter = 0
         self._history_actions = []
 
-    def goto_joint_position(self, joint_positions=DEFAULT_RESET_JOINT, controller_cfg=DEFAULT_JOINT_CONFIG, tolerance=1e-3):
+    def goto_joint_position(self, joint_positions=DEFAULT_RESET_JOINT, controller_cfg=DEFAULT_JOINT_CONFIG, tolerance=1.3e-3):
         action = list(joint_positions) + [-1.0]
 
         while True:
