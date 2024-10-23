@@ -10,3 +10,4 @@ numba
 termcolor
 simplejson
 pyasynch
+pymodbus==2.5.3

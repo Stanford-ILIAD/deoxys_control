@@ -32,6 +32,8 @@ class RobotiqGripperServer:
         # Connect to gripper
         general_cfg = YamlConfig(general_cfg_file).as_easydict()
         self._gripper_pub_port = general_cfg.NUC.GRIPPER_SUB_PORT
+        self._gripper_sub_port = general_cfg.NUC.GRIPPER_PUB_PORT
+        self._gripper_ip = general_cfg.NUC.IP
         self._gripper_pub_rate = 40.
         if "GRIPPER" in general_cfg and "PUB_RATE" in general_cfg.GRIPPER:
             sel._gripper_pub_rate = general_cfg.GRIPPER.PUB_RATE
@@ -66,7 +68,7 @@ class RobotiqGripperServer:
 
         # subscriber (receives gripper commands from client)
         self._gripper_subscriber.setsockopt_string(zmq.SUBSCRIBE, "")
-        self._gripper_subscriber.connect(f"tcp://{self._ip}:{self._gripper_sub_port}")
+        self._gripper_subscriber.connect(f"tcp://{self._gripper_ip}:{self._gripper_sub_port}")
 
         self._latest_gripper_msg = None
 
@@ -89,9 +91,10 @@ class RobotiqGripperServer:
 
         curr_time = time.time()
         # sec, msec
-        gripper_state.time = (
-            franka_robot_state_pb2.FrankaGripperStateMessage.Duration(curr_time, int(curr_time * 1000))
-        )
+        gripper_state.time.toSec = curr_time
+        gripper_state.time.toMSec = int(curr_time * 1000)
+        #    franka_robot_state_pb2.FrankaGripperStateMessage.Duration(toSec=curr_time, toMSec=int(curr_time * 1000))
+        #)
         # gripper_state.is_moving = self.gripper.is_moving()
 
         return gripper_state
@@ -131,11 +134,11 @@ class RobotiqGripperServer:
         # thread for publishing the state at a fixed frequency
         while True:
             start_time = time.time()
-            try:
-                self._latest_gripper_msg = self.get_gripper_state()
-                self._gripper_publisher.send(self._latest_gripper_msg.SerializeToString())
-            except Exception as e:
-                log.warning(f"GRIPPER PUB ERROR: {str(e)}")
+            #try:
+            self._latest_gripper_msg = self.get_gripper_state()
+            self._gripper_publisher.send(self._latest_gripper_msg.SerializeToString())
+            #except Exception as e:
+            #    log.warning(f"GRIPPER PUB ERROR: {str(e)}")
             remaining_time = (1. / self._gripper_pub_rate) - (time.time() - start_time)
             if remaining_time > 1e-5:
                 time.sleep(remaining_time)
