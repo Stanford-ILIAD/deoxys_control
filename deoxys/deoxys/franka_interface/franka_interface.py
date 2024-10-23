@@ -171,6 +171,7 @@ class FrankaInterface:
         # automatically reset gripper by default
         self.automatic_gripper_reset = automatic_gripper_reset
 
+        # wait to receive states
         logger.info("Waiting for states...")
         while not self.received_states:
             time.sleep(0.01)
@@ -210,10 +211,10 @@ class FrankaInterface:
 
     def preprocess(self):
 
-        if self.automatic_gripper_reset:
+        if self.automatic_gripper_reset and self._gripper_state_buffer:
             gripper_control_msg = franka_controller_pb2.FrankaGripperControlMessage()
             move_msg = franka_controller_pb2.FrankaGripperMoveMessage()
-            move_msg.width = 0.08
+            move_msg.width = self._gripper_state_buffer[-1].max_width
             move_msg.speed = 0.1
             gripper_control_msg.control_msg.Pack(move_msg)
 
@@ -508,19 +509,19 @@ class FrankaInterface:
             action (float): The control command for Franka gripper. Currently assuming scalar control commands.
         """
 
+        if not self._gripper_state_buffer:
+            return
+
         gripper_control_msg = franka_controller_pb2.FrankaGripperControlMessage()
 
-        # action 0-> 1 : Grasp
-        # action 1-> 0 : Release
-
-        if self._gripper_state_buffer:
-            print(self._gripper_state_buffer[-1])
+        # action [0, 1] : Grasp
+        # action [-1, 0) : Release
 
         # TODO (Yifeng): Test if sending grasping or gripper directly
         # will stop executing the previous command
         if action < 0.0:  #  and self.last_gripper_action == 1):
             move_msg = franka_controller_pb2.FrankaGripperMoveMessage()
-            move_msg.width = 0.08 * np.abs(action)
+            move_msg.width = self._gripper_state_buffer[-1].max_width * np.abs(action)
             move_msg.speed = 0.1
             gripper_control_msg.control_msg.Pack(move_msg)
 
@@ -541,6 +542,18 @@ class FrankaInterface:
 
             self._gripper_publisher.send(gripper_control_msg.SerializeToString())
         self.last_gripper_action = action
+
+    def gripper_home(self):
+
+        gripper_control_msg = franka_controller_pb2.FrankaGripperControlMessage()
+        home_msg = franka_controller_pb2.FrankaGripperHomingMessage()
+        home_msg.homing = True
+        gripper_control_msg.control_msg.Pack(home_msg)
+        
+        logger.debug("Gripper homing")
+
+        self._gripper_publisher.send(gripper_control_msg.SerializeToString())
+        time.sleep(4.0)
 
     def close(self):
         self._state_sub_thread.join(1.0)
