@@ -514,21 +514,21 @@ class FrankaInterface:
 
         gripper_control_msg = franka_controller_pb2.FrankaGripperControlMessage()
 
-        # action [0, 1] : Grasp
-        # action [-1, 0) : Release
+        # action [0.9, 1] : Grasp
+        # action [-1, 0.9) : Release
 
         # TODO (Yifeng): Test if sending grasping or gripper directly
         # will stop executing the previous command
-        if action < 0.0:  #  and self.last_gripper_action == 1):
+        if action < 0.9:  #  and self.last_gripper_action == 1):
             move_msg = franka_controller_pb2.FrankaGripperMoveMessage()
-            move_msg.width = self._gripper_state_buffer[-1].max_width * np.abs(action)
+            move_msg.width = self._gripper_state_buffer[-1].max_width * np.abs(action - 0.9) / 1.9
             move_msg.speed = 0.1
             gripper_control_msg.control_msg.Pack(move_msg)
 
             logger.debug("Gripper opening")
 
             self._gripper_publisher.send(gripper_control_msg.SerializeToString())
-        elif action >= 0.0:  #  and self.last_gripper_action == 0:
+        elif action >= 0.9:  #  and self.last_gripper_action == 0:
             grasp_msg = franka_controller_pb2.FrankaGripperGraspMessage()
             grasp_msg.width = -0.01
             grasp_msg.speed = 0.5
